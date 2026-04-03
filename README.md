@@ -1,36 +1,62 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Read Mode
 
-## Getting Started
+A minimal Markdown editor with live preview, built with Next.js (App Router), TypeScript, and Tailwind CSS.
 
-First, run the development server:
+## Setup
+
+```bash
+npm install
+```
+
+## Usage
+
+### Development
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000 in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Production build
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+npm start
+```
 
-## Learn More
+### Features
 
-To learn more about Next.js, take a look at the following resources:
+- **Two-pane layout** (desktop) or **tabbed view** (mobile) — edit Markdown on the left, see live HTML preview on the right
+- **Live preview** with 200ms debounce
+- **Copy HTML** to clipboard
+- **Download HTML** as a standalone `.html` file with embedded read-mode CSS
+- **Read Mode toggle** — switches to comfortable serif typography with wide line-height
+- **Print** — CSS print stylesheet hides the editor and toolbar
+- **3 sample templates** — Article, Meeting Notes, README
+- **Word count + reading time** in the toolbar
+- **localStorage persistence** — your Markdown is saved automatically
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Security notes
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- All rendered HTML is sanitised with [DOMPurify](https://github.com/cure53/DOMPurify) before display
+- `markdown-it` is configured with `html: false` to prevent raw HTML injection at the parser level
+- Only an explicit allowlist of HTML tags and attributes passes through sanitisation
+- A warning banner appears if sanitisation removes any content
+- Downloaded HTML files contain the same sanitised output
 
-## Deploy on Vercel
+## Limitations
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- No server-side rendering of the editor (client component with `"use client"`)
+- No syntax highlighting in code blocks
+- No collaborative editing or backend storage
+- Sanitisation comparison uses string length heuristic — minor formatting differences may trigger false positive warnings
+- DOMPurify runs client-side only; no server-side sanitisation fallback
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Tech stack
+
+- Next.js 16 (App Router)
+- TypeScript
+- Tailwind CSS v4 + `@tailwindcss/typography`
+- `markdown-it` for Markdown parsing
+- `dompurify` for XSS sanitisation
